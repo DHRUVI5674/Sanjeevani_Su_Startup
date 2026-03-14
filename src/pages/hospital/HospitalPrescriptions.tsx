@@ -497,9 +497,11 @@ const FeedbackDrawer = ({ rx, feedback, onClose }: { rx: any; feedback: any | nu
   const ratingEmojis = ['', '😞', '😕', '😐', '🙂', '😊'];
 
   const [showPharmaSelect, setShowPharmaSelect] = useState(false);
-  const [selectedPharma, setSelectedPharma] = useState('');
+  const [selectedPharma, setSelectedPharma] = useState('Global Sanjeevani Network (All Partners)');
+  const [isSending, setIsSending] = useState(false);
 
   const mockPharmacies = [
+    'Global Sanjeevani Network (All Partners)',
     'Apollo Pharmacy Network',
     'Wellness Forever',
     'MedPlus Stores',
@@ -608,28 +610,54 @@ const FeedbackDrawer = ({ rx, feedback, onClose }: { rx: any; feedback: any | nu
                     </select>
                     <div className="flex gap-2">
                       <button
-                        onClick={() => {
+                        disabled={isSending}
+                        onClick={async () => {
                           if (!selectedPharma) {
                             toast.error('Please select a pharmacy first.');
                             return;
                           }
-                          toast.success(`🔄 Preparing anonymous alert for ${selectedPharma}...`);
-                          generatePharmacyAlertReportPDF({
-                            diagnosis: rx.diagnosis,
-                            feedback,
-                          });
-                          setTimeout(() => {
-                            toast.success(`✅ Anonymous feedback successfully securely routed to ${selectedPharma}!`);
-                            setShowPharmaSelect(false);
-                          }, 1500);
+                          setIsSending(true);
+                          
+                          try {
+                            // 1. Actually Update Supabase DB to mark this as shared so Pharma can read it!
+                            const { error: dbError } = await supabase
+                              .from('prescription_feedback')
+                              .update({ 
+                                shared_with_pharma: true, 
+                                shared_pharma_network: selectedPharma 
+                              } as any)
+                              .eq('id', feedback.id);
+
+                            if (dbError) throw dbError;
+
+                            toast.success(`🔄 Preparing anonymous alert for ${selectedPharma}...`);
+                            
+                            // 2. Client-side PDF Generation as a receipt
+                            generatePharmacyAlertReportPDF({
+                              diagnosis: rx.diagnosis,
+                              feedback,
+                            });
+
+                            setTimeout(() => {
+                              toast.success(`✅ Anonymous feedback securely routed to ${selectedPharma}!`);
+                              setShowPharmaSelect(false);
+                            }, 1500);
+
+                          } catch (err: any) {
+                            console.error('Sharing failed:', err);
+                            toast.error('Transmission failed: Please check if you ran the Supabase SQL update.');
+                          } finally {
+                            setIsSending(false);
+                          }
                         }}
-                        className="flex-1 py-2 rounded-lg text-[12px] font-bold text-white transition-all bg-[#0891B2] hover:bg-cyan-700"
+                        className="flex-1 py-2 rounded-lg text-[12px] font-bold text-white transition-all bg-[#0891B2] hover:bg-cyan-700 disabled:opacity-50"
                       >
-                        Send Alert Securely
+                        {isSending ? 'Transmitting...' : 'Send Alert Securely'}
                       </button>
                       <button
+                        disabled={isSending}
                         onClick={() => setShowPharmaSelect(false)}
-                        className="px-3 py-2 rounded-lg text-[12px] font-bold border hover:bg-gray-50"
+                        className="px-3 py-2 rounded-lg text-[12px] font-bold border hover:bg-gray-50 disabled:opacity-50"
                         style={{ color: '#64748B', borderColor: '#E2EEF1' }}
                       >
                         Cancel

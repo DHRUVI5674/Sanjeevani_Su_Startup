@@ -33,7 +33,14 @@ const PharmaOverview = () => {
     const fetchAll = async () => {
       const { data: fbData } = await supabase.from('prescription_feedback').select('*');
       const { data: medData } = await supabase.from('prescription_medicines').select('*, prescriptions(id)');
-      if (fbData) setFeedbacks(fbData);
+      if (fbData) {
+        const relevantFeedbacks = fbData.filter((f: any) => 
+          f.shared_pharma_network === 'Global Sanjeevani Network (All Partners)' ||
+          f.shared_pharma_network === pharma.pharmacy_name ||
+          !f.shared_pharma_network // Fallback for old mock data or if columns haven't synced
+        );
+        setFeedbacks(relevantFeedbacks);
+      }
       if (medData) setMedicines(medData);
     };
     fetchAll();
