@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 import { 
   Activity, Users, Pill, UserCheck, AlertCircle, 
   MapPin, TrendingUp, Calculator, PieChart, ArrowUpRight, ArrowDownRight 
@@ -24,40 +25,93 @@ const JharokhaArch = ({ color = '#8B5CF6', opacity = 0.18 }) => (
 const PharmaOverview = () => {
   const { pharma } = useOutletContext<{ pharma: PharmaProfile | null }>();
 
-  // Mock Data for Dashboard
-  const effectivenessData = [
-    { name: 'BP Tablet A', patients: 200, improved: 160, noEffect: 25, sideEffects: 15 },
-    { name: 'Diabetes Drug B', patients: 150, improved: 110, noEffect: 30, sideEffects: 10 },
-    { name: 'Pain Relief C', patients: 300, improved: 270, noEffect: 20, sideEffects: 10 },
-  ];
+  const [feedbacks, setFeedbacks] = useState<any[]>([]);
+  const [medicines, setMedicines] = useState<any[]>([]);
 
-  const demographicData = [
-    { age: '18–30', effectiveness: 90 },
-    { age: '31–50', effectiveness: 85 },
-    { age: '50+', effectiveness: 70 },
-  ];
+  useEffect(() => {
+    if (!pharma) return;
+    const fetchAll = async () => {
+      const { data: fbData } = await supabase.from('prescription_feedback').select('*');
+      const { data: medData } = await supabase.from('prescription_medicines').select('*, prescriptions(id)');
+      if (fbData) setFeedbacks(fbData);
+      if (medData) setMedicines(medData);
+    };
+    fetchAll();
+  }, [pharma]);
 
-  const sideEffectsData = [
-    { name: 'Headache', value: 12 },
-    { name: 'Nausea', value: 8 },
-    { name: 'Dizziness', value: 5 },
-    { name: 'Fatigue', value: 15 },
-  ];
+  // Effectiveness Data matching meds to feedback (like Hospital Analytics)
+  const medsByRx: Record<string, string[]> = {};
+  medicines.forEach(m => {
+    if (m.prescription_id) {
+      if (!medsByRx[m.prescription_id]) medsByRx[m.prescription_id] = [];
+      medsByRx[m.prescription_id].push(m.medicine_name);
+    }
+  });
 
+  const effMap: Record<string, { patients: number; improved: number; noEffect: number; sideEffects: number }> = {};
+  const ageGroupMap: Record<string, { count: number; totalRating: number }> = {
+    '18–30': { count: 0, totalRating: 0 },
+    '31–50': { count: 0, totalRating: 0 },
+    '50+': { count: 0, totalRating: 0 },
+  };
+  const scMap: Record<string, number> = {};
+  let adCount = 0;
+  let adTotal = 0;
+
+  feedbacks.forEach(f => {
+    // Adherence
+    if (f.adherence_rating) {
+      adTotal++;
+      if (['Always', 'Mostly'].includes(f.adherence_rating)) adCount++;
+    }
+    // Demographics
+    const age = f.patient_age || 0;
+    if (age >= 18 && age <= 30) { ageGroupMap['18–30'].count++; ageGroupMap['18–30'].totalRating += f.improvement_rating || 0; }
+    else if (age > 30 && age <= 50) { ageGroupMap['31–50'].count++; ageGroupMap['31–50'].totalRating += f.improvement_rating || 0; }
+    else if (age > 50) { ageGroupMap['50+'].count++; ageGroupMap['50+'].totalRating += f.improvement_rating || 0; }
+
+    // Side Effects
+    (f.side_effects || []).forEach((se: string) => { scMap[se] = (scMap[se] || 0) + 1; });
+
+    // Effectiveness
+    const presMeds = medsByRx[f.prescription_id] || [];
+    presMeds.forEach(m => {
+      if (!effMap[m]) effMap[m] = { patients: 0, improved: 0, noEffect: 0, sideEffects: 0 };
+      effMap[m].patients++;
+      if ((f.improvement_rating || 0) >= 4) effMap[m].improved++;
+      else if ((f.improvement_rating || 0) <= 2) effMap[m].noEffect++;
+      if (f.had_side_effects) effMap[m].sideEffects++;
+    });
+  });
+
+  const effectivenessData = Object.entries(effMap).map(([name, data]) => ({ name: name.slice(0, 15), ...data })).sort((a,b) => b.patients - a.patients).slice(0, 5);
+  if (effectivenessData.length === 0) effectivenessData.push({ name: 'No data', patients: 0, improved: 0, noEffect: 0, sideEffects: 0 });
+
+  const demographicData = Object.entries(ageGroupMap).map(([age, data]) => ({
+    age, effectiveness: data.count > 0 ? Math.round((data.totalRating / (data.count * 5)) * 100) : 0,
+  }));
+
+  const sideEffectsData = Object.entries(scMap).map(([name, value]) => ({ name, value })).sort((a,b) => b.value - a.value).slice(0, 4);
+  if (sideEffectsData.length === 0) sideEffectsData.push({ name: 'No data', value: 1 });
+
+  const totalPatientsTracked = new Set(feedbacks.map(f => f.patient_id)).size;
+  const overallEffectiveness = feedbacks.length > 0 ? Math.round((feedbacks.reduce((a,b)=>a+(b.improvement_rating||0),0) / (feedbacks.length * 5)) * 100) : 0;
+  const adherenceRate = adTotal > 0 ? Math.round((adCount / adTotal) * 100) : 0;
+  const reportedSideEffectsCount = feedbacks.filter(f => f.had_side_effects).length;
+
+  // Keeping demand forecast and geographic data mocked until we establish a real inventory/sales system
   const geographicData = [
-    { region: 'Gujarat', drug: 'Drug A', usage: 1200 },
-    { region: 'Rajasthan', drug: 'Drug B', usage: 950 },
-    { region: 'Maharashtra', drug: 'Drug A', usage: 800 },
-    { region: 'Delhi', drug: 'Drug C', usage: 600 },
+    { region: 'Gujarat', usage: 1200 }, { region: 'Rajasthan', usage: 950 },
+    { region: 'Maharashtra', usage: 800 }, { region: 'Delhi', usage: 600 },
   ];
 
   const COLORS = ['#8B5CF6', '#A78BFA', '#C4B5FD', '#DDD6FE'];
 
   const statCards = [
-    { label: 'Avg Effectiveness', value: '84%', icon: Activity, trend: '+2.4%', up: true },
-    { label: 'Total Patients tracked', value: '1,240', icon: Users, trend: '+12%', up: true },
-    { label: 'Adherence Rate', value: '78%', icon: UserCheck, trend: '-1.2%', up: false },
-    { label: 'Reported Side Effects', value: '42', icon: AlertCircle, trend: '+5', up: false },
+    { label: 'Avg Effectiveness', value: `${overallEffectiveness}%`, icon: Activity, trend: '+2.4%', up: true },
+    { label: 'Total Patients tracked', value: totalPatientsTracked, icon: Users, trend: '+12%', up: true },
+    { label: 'Adherence Rate', value: `${adherenceRate}%`, icon: UserCheck, trend: '-1.2%', up: false },
+    { label: 'Reported Side Effects', value: reportedSideEffectsCount, icon: AlertCircle, trend: '+5', up: false },
   ];
 
   return (
@@ -123,7 +177,7 @@ const PharmaOverview = () => {
                     <tr key={m.name}>
                       <td className="py-3 font-medium text-[#1E293B]">{m.name}</td>
                       <td className="py-3 text-center">{m.patients}</td>
-                      <td className="py-3 text-center text-emerald-600 font-bold">{Math.round((m.improved/m.patients)*100)}%</td>
+                      <td className="py-3 text-center text-emerald-600 font-bold">{m.patients > 0 ? Math.round((m.improved/m.patients)*100) : 0}%</td>
                       <td className="py-3 text-center text-rose-500">{m.sideEffects}</td>
                     </tr>
                   ))}
@@ -190,7 +244,7 @@ const PharmaOverview = () => {
                     <span className="w-2 h-2 rounded-full" style={{ background: COLORS[i % COLORS.length] }} />
                     <span className="text-[#64748B]">{s.name}</span>
                   </div>
-                  <span className="font-bold text-[#1E293B]">{s.value}%</span>
+                  <span className="font-bold text-[#1E293B]">{s.value}</span>
                 </div>
               ))}
             </div>
