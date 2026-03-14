@@ -10,6 +10,11 @@ import PatientLogin from "./pages/PatientLogin";
 import ComingSoon from "./pages/ComingSoon";
 import PatientResetPassword from "./pages/PatientResetPassword";
 import HospitalLogin from "./pages/HospitalLogin";
+import PharmaLogin from "./pages/PharmaLogin";
+import PharmaRegistration from "./pages/PharmaRegistration";
+import PharmaDashboardLayout from "./pages/pharma/PharmaDashboardLayout";
+import PharmaOverview from "./pages/pharma/PharmaOverview";
+import PharmaAnalyticsPage from "./pages/pharma/PharmaAnalyticsPage";
 import NotFound from "./pages/NotFound";
 import AdminLayout from "./pages/admin/AdminLayout";
 import Overview from "./pages/admin/Overview";
@@ -23,6 +28,7 @@ import PatientRecords from "./pages/patient/PatientRecords";
 import PatientReports from "./pages/patient/PatientReports";
 import PatientAppointments from "./pages/patient/PatientAppointments";
 import PatientFindDoctors from "./pages/patient/PatientFindDoctors";
+import PatientFindPharma from "./pages/patient/PatientFindPharma";
 import PatientEmergency from "./pages/patient/PatientEmergency";
 import PatientSettings from "./pages/patient/PatientSettings";
 import HospitalDashboardLayout from "./pages/hospital/HospitalDashboardLayout";
@@ -63,6 +69,7 @@ const App = () => (
             <Route path="reports" element={<PatientReports />} />
             <Route path="appointments" element={<PatientAppointments />} />
             <Route path="find" element={<PatientFindDoctors />} />
+            <Route path="pharmacy" element={<PatientFindPharma />} />
             <Route path="emergency" element={<PatientEmergency />} />
             <Route path="settings" element={<PatientSettings />} />
           </Route>
@@ -85,6 +92,21 @@ const App = () => (
             <Route path="analytics" element={<HospitalAnalytics />} />
             <Route path="documents" element={<HospitalDocuments />} />
             <Route path="settings" element={<HospitalSettings />} />
+          </Route>
+          <Route path="/pharma/login" element={<PharmaLogin />} />
+          <Route path="/pharma/registration" element={<PharmaRegistration />} />
+          {/* Pharma dashboard routes */}
+          <Route path="/pharma/dashboard" element={<PharmaDashboardLayout />}>
+            <Route index element={<PharmaOverview />} />
+            <Route path="effectiveness" element={<PharmaAnalyticsPage />} />
+            <Route path="demographics" element={<PharmaAnalyticsPage />} />
+            <Route path="disease-performance" element={<PharmaAnalyticsPage />} />
+            <Route path="adherence" element={<PharmaAnalyticsPage />} />
+            <Route path="side-effects" element={<PharmaAnalyticsPage />} />
+            <Route path="geographic" element={<PharmaAnalyticsPage />} />
+            <Route path="prescription-trends" element={<PharmaAnalyticsPage />} />
+            <Route path="forecast" element={<PharmaAnalyticsPage />} />
+            <Route path="comparison" element={<PharmaAnalyticsPage />} />
           </Route>
           {/* Admin routes */}
           <Route path="/admin" element={<AdminLayout />}>

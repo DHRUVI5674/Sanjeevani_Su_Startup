@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Home, Pill, ClipboardList, Calendar, Search, ShieldAlert, Settings, LogOut, X, QrCode } from 'lucide-react';
+import { Home, Pill, ClipboardList, Calendar, Search, ShieldAlert, Settings, LogOut, X, QrCode, Store } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import type { PatientProfile } from './PatientProtectedRoute';
 
@@ -9,6 +9,7 @@ const navItems = [
   { label: 'Lab Reports', icon: ClipboardList, path: '/patient/dashboard/reports' },
   { label: 'Appointments', icon: Calendar, path: '/patient/dashboard/appointments' },
   { label: 'Find Doctors', icon: Search, path: '/patient/dashboard/find' },
+  { label: 'Find Pharmacy', icon: Store, path: '/patient/dashboard/pharmacy' },
   { label: 'Emergency Profile', icon: ShieldAlert, path: '/patient/dashboard/emergency' },
   { label: 'Settings', icon: Settings, path: '/patient/dashboard/settings' },
 ];
@@ -76,7 +77,7 @@ const PatientSidebar = ({ patient, mobileOpen, onMobileClose, onShowQR }: Props)
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-2 space-y-0.5">
+      <nav className="flex-1 px-3 py-2 space-y-0.5 overflow-y-auto">
         {navItems.map((item) => {
           const active = location.pathname === item.path;
           return (

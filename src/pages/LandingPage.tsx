@@ -253,7 +253,7 @@ const LandingPage = () => {
 
       {/* Section 4 — User Type Cards */}
       <section ref={cardsRef} className="py-16 px-5 md:px-12" style={{ background: '#FFFFFF' }}>
-        <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-6">
+        <div className="max-w-7xl mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Patient */}
           <UserCard
             archColor="#0891B2"
@@ -300,6 +300,26 @@ const LandingPage = () => {
             onSecondary={() => navigate('/hospital/login')}
             footer="License verification required · ABDM integrated"
             badge="⚡ Emergency Network"
+          />
+          {/* Pharma */}
+          <UserCard
+            archColor="#8B5CF6"
+            accentColor="#8B5CF6"
+            icon={
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                <rect x="10" y="10" width="20" height="20" rx="4" fill="#8B5CF6" fillOpacity="0.1" stroke="#8B5CF6" strokeWidth="1.5" />
+                <path d="M14 20h12M20 14v12" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+            }
+            title="I'm a Pharma"
+            description="Register your pharmacy, manage inventory, process digital prescriptions, and provide medication to patients in the network."
+            primaryLabel="Register Pharmacy"
+            primaryStyle={{ background: '#8B5CF6' }}
+            onPrimary={() => navigate('/pharma/registration')}
+            secondaryLabel="Pharma Login"
+            secondaryStyle={{ border: '1.5px solid #8B5CF6', color: '#8B5CF6', background: 'white' }}
+            onSecondary={() => navigate('/pharma/login')}
+            footer="Valid license required · Digital prescriptions"
           />
           {/* Admin */}
           <UserCard
