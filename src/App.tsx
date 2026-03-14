@@ -46,6 +46,8 @@ import HospitalRejected from "./pages/hospital/HospitalRejected";
 import HospitalPrescriptions from "./pages/hospital/HospitalPrescriptions";
 import HospitalPrescriptionAnalytics from "./pages/hospital/HospitalPrescriptionAnalytics";
 import PublicQRProfile from "./pages/PublicQRProfile";
+import PricingPage from "./pages/PricingPage";
+import AdminSubscriptions from "./pages/admin/AdminSubscriptions";
 
 const queryClient = new QueryClient();
 
@@ -60,6 +62,7 @@ const App = () => (
           <Route path="/register" element={<HospitalRegistration />} />
           <Route path="/patient/signup" element={<PatientSignup />} />
           <Route path="/login" element={<UnifiedLogin />} />
+          <Route path="/pricing" element={<PricingPage />} />
           <Route path="/patient/login" element={<UnifiedLogin />} />
           <Route path="/hospital/login" element={<UnifiedLogin />} />
           <Route path="/pharma/login" element={<UnifiedLogin />} />
@@ -114,6 +117,7 @@ const App = () => (
             <Route path="patients" element={<Patients />} />
             <Route path="logs" element={<ActivityLog />} />
             <Route path="settings" element={<AdminSettings />} />
+            <Route path="subscriptions" element={<AdminSubscriptions />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="/qr/:patientId" element={<PublicQRProfile />} />

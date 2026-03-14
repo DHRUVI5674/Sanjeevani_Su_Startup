@@ -227,11 +227,11 @@ const LandingPage = () => {
                 {t('landing.heroDesc')}
               </p>
               <div className="flex flex-col sm:flex-row gap-3 mb-6">
-                <button onClick={() => navigate('/patient/signup')} className="px-7 py-3 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90" style={{ background: '#0891B2' }}>
-                  {t('landing.imPatient')}
+                <button onClick={() => navigate('/login?role=patient')} className="px-7 py-3 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90" style={{ background: '#0891B2' }}>
+                  {t('landing.imPatient')} <span className="ml-1 opacity-80">(Login / Register)</span>
                 </button>
-                <button onClick={() => navigate('/register')} className="px-7 py-3 rounded-lg text-sm font-semibold transition-all hover:opacity-90" style={{ border: '1.5px solid #0891B2', color: '#0891B2', background: 'white' }}>
-                  {t('landing.registerHospital')}
+                <button onClick={() => navigate('/login?role=hospital')} className="px-7 py-3 rounded-lg text-sm font-semibold transition-all hover:opacity-90" style={{ border: '1.5px solid #0891B2', color: '#0891B2', background: 'white' }}>
+                  {t('landing.registerHospital')} <span className="ml-1 opacity-80">(Login / Register)</span>
                 </button>
               </div>
               <p className="text-xs flex items-center gap-2 flex-wrap" style={{ color: '#94A3B8' }}>
@@ -269,12 +269,9 @@ const LandingPage = () => {
             }
             title={t('landing.patientTitle')}
             description={t('landing.patientDesc')}
-            primaryLabel={t('landing.createPatient')}
+            primaryLabel={t('landing.patientLoginSignup', 'Patient Portal (Login / Register)')}
             primaryStyle={{ background: '#0891B2' }}
-            onPrimary={() => navigate('/patient/signup')}
-            secondaryLabel={t('landing.patientLogin')}
-            secondaryStyle={{ border: '1.5px solid #0891B2', color: '#0891B2', background: 'white' }}
-            onSecondary={() => navigate('/login?role=patient')}
+            onPrimary={() => navigate('/login?role=patient')}
             footer={t('landing.patientFooter')}
           />
           {/* Hospital */}
@@ -293,13 +290,10 @@ const LandingPage = () => {
             }
             title={t('landing.hospitalTitle')}
             description={t('landing.hospitalDesc')}
-            primaryLabel={t('landing.registerHospitalBtn')}
+            primaryLabel={t('landing.hospitalLoginSignup', 'Hospital Portal (Login / Register)')}
             primaryStyle={{ background: '#E8A820', color: '#1E293B' }}
             primaryTextClass="text-[#1E293B]"
-            onPrimary={() => navigate('/register')}
-            secondaryLabel={t('landing.hospitalLogin')}
-            secondaryStyle={{ border: '1.5px solid #E8A820', color: '#E8A820', background: 'white' }}
-            onSecondary={() => navigate('/login?role=hospital')}
+            onPrimary={() => navigate('/login?role=hospital')}
             footer={t('landing.hospitalFooter')}
             badge={t('landing.emergencyNetwork')}
           />
@@ -315,12 +309,9 @@ const LandingPage = () => {
             }
             title={t('landing.pharmaTitle')}
             description={t('landing.pharmaDesc')}
-            primaryLabel={t('landing.registerPharma')}
+            primaryLabel={t('landing.pharmaLoginSignup', 'Pharma Portal (Login / Register)')}
             primaryStyle={{ background: '#8B5CF6' }}
-            onPrimary={() => navigate('/pharma/registration')}
-            secondaryLabel={t('landing.pharmaLogin')}
-            secondaryStyle={{ border: '1.5px solid #8B5CF6', color: '#8B5CF6', background: 'white' }}
-            onSecondary={() => navigate('/login?role=pharma')}
+            onPrimary={() => navigate('/login?role=pharma')}
             footer={t('landing.pharmaFooter')}
           />
           {/* Admin */}

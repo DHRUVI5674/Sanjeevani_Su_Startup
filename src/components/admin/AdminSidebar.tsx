@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { BarChart3, Building2, Users, ClipboardList, Settings, LogOut, Menu, X } from 'lucide-react';
+import { BarChart3, Building2, Users, ClipboardList, Settings, LogOut, Menu, X, Crown } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useEffect, useState } from 'react';
 
@@ -8,6 +8,7 @@ const navItems = [
   { label: 'Hospital Approvals', icon: Building2, path: '/admin/hospitals' },
   { label: 'Patients', icon: Users, path: '/admin/patients' },
   { label: 'Activity Log', icon: ClipboardList, path: '/admin/logs' },
+  { label: 'Subscriptions', icon: Crown, path: '/admin/subscriptions' },
   { label: 'Settings', icon: Settings, path: '/admin/settings' },
 ];
 
