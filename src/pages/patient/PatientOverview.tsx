@@ -7,6 +7,7 @@ import { Pill, AlertTriangle, Activity, ShieldCheck, Calendar, FileText, Trendin
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { format, formatDistanceToNow } from 'date-fns';
 import { toast } from 'sonner';
+import PatientPrescriptionsOverview from '@/components/patient/dashboard/PatientPrescriptionsOverview';
 
 const PatientOverview = () => {
   const { patient } = usePatientContext();
@@ -134,6 +135,9 @@ const PatientOverview = () => {
           detail={patient.has_insurance ? (patient.insurance_provider || 'Active') : 'Not enrolled'}
           onViewAll={() => navigate('/patient/dashboard/settings')} />
       </div>
+
+      {/* Prescriptions & Medicine Schedule */}
+      <PatientPrescriptionsOverview patientId={patient.id} />
 
       {/* Upcoming Appointments */}
       <div className="bg-white rounded-xl overflow-hidden" style={{ border: '1px solid #E2EEF1' }}>

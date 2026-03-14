@@ -14,6 +14,229 @@ export type Database = {
   }
   public: {
     Tables: {
+      prescriptions: {
+        Row: {
+          id: string
+          hospital_id: string | null
+          patient_id: string | null
+          doctor_id: string | null
+          doctor_name: string
+          doctor_specialization: string | null
+          admission_id: string | null
+          appointment_id: string | null
+          diagnosis: string
+          general_instructions: string | null
+          feedback_after_days: number
+          feedback_requested: boolean | null
+          feedback_deadline_date: string | null
+          status: string | null
+          prescription_date: string
+          valid_until: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          hospital_id?: string | null
+          patient_id?: string | null
+          doctor_id?: string | null
+          doctor_name: string
+          doctor_specialization?: string | null
+          admission_id?: string | null
+          appointment_id?: string | null
+          diagnosis: string
+          general_instructions?: string | null
+          feedback_after_days?: number
+          feedback_requested?: boolean | null
+          feedback_deadline_date?: string | null
+          status?: string | null
+          prescription_date?: string
+          valid_until?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          hospital_id?: string | null
+          patient_id?: string | null
+          doctor_id?: string | null
+          doctor_name?: string
+          doctor_specialization?: string | null
+          admission_id?: string | null
+          appointment_id?: string | null
+          diagnosis?: string
+          general_instructions?: string | null
+          feedback_after_days?: number
+          feedback_requested?: boolean | null
+          feedback_deadline_date?: string | null
+          status?: string | null
+          prescription_date?: string
+          valid_until?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prescriptions_hospital_id_fkey"
+            columns: ["hospital_id"]
+            isOneToOne: false
+            referencedRelation: "hospitals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prescriptions_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      prescription_medicines: {
+        Row: {
+          id: string
+          prescription_id: string | null
+          patient_id: string | null
+          medicine_name: string
+          dosage: string
+          medicine_form: string | null
+          times_per_day: number
+          schedule: Json
+          duration_days: number | null
+          start_date: string | null
+          end_date: string | null
+          special_instructions: string | null
+          is_active: boolean | null
+          stopped_reason: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          prescription_id?: string | null
+          patient_id?: string | null
+          medicine_name: string
+          dosage: string
+          medicine_form?: string | null
+          times_per_day?: number
+          schedule?: Json
+          duration_days?: number | null
+          start_date?: string | null
+          end_date?: string | null
+          special_instructions?: string | null
+          is_active?: boolean | null
+          stopped_reason?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          prescription_id?: string | null
+          patient_id?: string | null
+          medicine_name?: string
+          dosage?: string
+          medicine_form?: string | null
+          times_per_day?: number
+          schedule?: Json
+          duration_days?: number | null
+          start_date?: string | null
+          end_date?: string | null
+          special_instructions?: string | null
+          is_active?: boolean | null
+          stopped_reason?: string | null
+          created_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rx_meds_prescription_id_fkey"
+            columns: ["prescription_id"]
+            isOneToOne: false
+            referencedRelation: "prescriptions"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      prescription_feedback: {
+        Row: {
+          id: string
+          prescription_id: string | null
+          patient_id: string | null
+          hospital_id: string | null
+          doctor_id: string | null
+          improvement_rating: number | null
+          adherence_rating: string | null
+          had_side_effects: boolean | null
+          side_effects: string[] | null
+          side_effect_severity: string | null
+          medicine_feedback: Json | null
+          patient_notes: string | null
+          continue_recommended: boolean | null
+          symptoms_resolved: boolean | null
+          pain_level_before: number | null
+          pain_level_after: number | null
+          patient_age: number | null
+          patient_gender: string | null
+          patient_blood_group: string | null
+          submitted_at: string | null
+          is_read: boolean | null
+          read_at: string | null
+        }
+        Insert: {
+          id?: string
+          prescription_id?: string | null
+          patient_id?: string | null
+          hospital_id?: string | null
+          doctor_id?: string | null
+          improvement_rating?: number | null
+          adherence_rating?: string | null
+          had_side_effects?: boolean | null
+          side_effects?: string[] | null
+          side_effect_severity?: string | null
+          medicine_feedback?: Json | null
+          patient_notes?: string | null
+          continue_recommended?: boolean | null
+          symptoms_resolved?: boolean | null
+          pain_level_before?: number | null
+          pain_level_after?: number | null
+          patient_age?: number | null
+          patient_gender?: string | null
+          patient_blood_group?: string | null
+          submitted_at?: string | null
+          is_read?: boolean | null
+          read_at?: string | null
+        }
+        Update: {
+          id?: string
+          prescription_id?: string | null
+          patient_id?: string | null
+          hospital_id?: string | null
+          doctor_id?: string | null
+          improvement_rating?: number | null
+          adherence_rating?: string | null
+          had_side_effects?: boolean | null
+          side_effects?: string[] | null
+          side_effect_severity?: string | null
+          medicine_feedback?: Json | null
+          patient_notes?: string | null
+          continue_recommended?: boolean | null
+          symptoms_resolved?: boolean | null
+          pain_level_before?: number | null
+          pain_level_after?: number | null
+          patient_age?: number | null
+          patient_gender?: string | null
+          patient_blood_group?: string | null
+          submitted_at?: string | null
+          is_read?: boolean | null
+          read_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rx_fb_prescription_id_fkey"
+            columns: ["prescription_id"]
+            isOneToOne: false
+            referencedRelation: "prescriptions"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       admin_logs: {
         Row: {
           action: string

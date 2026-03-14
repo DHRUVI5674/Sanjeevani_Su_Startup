@@ -2,7 +2,8 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import JharokhaArch from '@/components/admin/JharokhaArch';
-import { Search, Plus, Eye, FileText, LogOut as DischargeIcon, X, Pill, AlertTriangle, UserPlus, Mail } from 'lucide-react';
+import { Search, Plus, Eye, FileText, LogOut as DischargeIcon, X, Pill, AlertTriangle, UserPlus, Mail, Loader2, Download } from 'lucide-react';
+import { addDays } from 'date-fns';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -86,6 +87,18 @@ const HospitalPatients = () => {
   const [showAllergyConfirm, setShowAllergyConfirm] = useState(false);
   const [passwordNotSet, setPasswordNotSet] = useState<boolean | null>(null);
 
+  // Prescription tab state
+  const [patientRxList, setPatientRxList] = useState<any[]>([]);
+  const [patientRxMeds, setPatientRxMeds] = useState<any[]>([]);
+  const [rxFeedbacks, setRxFeedbacks] = useState<any[]>([]);
+  const [showRxModal, setShowRxModal] = useState(false);
+  const [rxViewFeedback, setRxViewFeedback] = useState<any>(null);
+  const [rxSaving, setRxSaving] = useState(false);
+  const [rxForm, setRxForm] = useState({
+    diagnosis: '', instructions: '', feedbackDays: 7, requestFeedback: true, validDays: 30,
+    medicines: [{ name: '', dosage: '', form: 'Tablet', timesPerDay: 3, durationDays: 7, instructions: '' }] as any[],
+  });
+
   const fetchPatients = useCallback(async () => {
     if (!hospital) return;
     let q = supabase
@@ -134,11 +147,91 @@ const HospitalPatients = () => {
     setPasswordNotSet(data ? !data.password_set : null);
   };
 
+  const fetchPatientRx = async (patientId: string) => {
+    if (!hospital) return;
+    const [rxRes, fbRes] = await Promise.all([
+      supabase.from('prescriptions').select('*').eq('patient_id', patientId).eq('hospital_id', hospital.id).order('prescription_date', { ascending: false }),
+      supabase.from('prescription_feedback').select('*').eq('patient_id', patientId).eq('hospital_id', hospital.id),
+    ]);
+    setPatientRxList(rxRes.data || []);
+    setRxFeedbacks(fbRes.data || []);
+  };
+
+  const generateSchedule = (timesPerDay: number) => {
+    const templates: Record<number, { time: string; label: string; with: string }[]> = {
+      1: [{ time: '08:00', label: 'Morning', with: 'After breakfast' }],
+      2: [{ time: '08:00', label: 'Morning', with: 'After breakfast' }, { time: '21:00', label: 'Night', with: 'After dinner' }],
+      3: [{ time: '08:00', label: 'Morning', with: 'After breakfast' }, { time: '14:00', label: 'Afternoon', with: 'After lunch' }, { time: '21:00', label: 'Night', with: 'After dinner' }],
+      4: [{ time: '08:00', label: 'Morning', with: 'After breakfast' }, { time: '14:00', label: 'Afternoon', with: 'After lunch' }, { time: '18:00', label: 'Evening', with: 'Before dinner' }, { time: '21:00', label: 'Night', with: 'After dinner' }],
+    };
+    return templates[timesPerDay] || templates[3];
+  };
+
+  const submitPrescription = async () => {
+    if (!hospital || !selectedPatient) return;
+    const patientId = selectedPatient.patients?.id || selectedPatient.patient_id;
+    if (!rxForm.diagnosis || rxForm.medicines.some((m: any) => !m.name || !m.dosage)) {
+      toast.error('Please fill diagnosis and all medicine fields.');
+      return;
+    }
+    setRxSaving(true);
+    try {
+      const todayDate = new Date().toISOString().split('T')[0];
+      const doctorName = selectedPatient.treating_doctor || hospital.admin_name || 'Doctor';
+      const doctorId = selectedPatient.treating_doctor_id || null;
+
+      const { data: rx, error: rxErr } = await supabase.from('prescriptions').insert([{
+        hospital_id: hospital.id,
+        patient_id: patientId,
+        doctor_id: doctorId,
+        doctor_name: doctorName,
+        doctor_specialization: null,
+        admission_id: selectedPatient.id || null,
+        diagnosis: rxForm.diagnosis,
+        general_instructions: rxForm.instructions || null,
+        feedback_after_days: rxForm.feedbackDays,
+        feedback_requested: rxForm.requestFeedback,
+        feedback_deadline_date: rxForm.requestFeedback ? addDays(new Date(), rxForm.feedbackDays).toISOString().split('T')[0] : null,
+        prescription_date: todayDate,
+        valid_until: addDays(new Date(), rxForm.validDays).toISOString().split('T')[0],
+      }]).select().single();
+
+      if (rxErr) throw rxErr;
+
+      const medsRows = rxForm.medicines.map((m: any) => ({
+        prescription_id: rx.id,
+        patient_id: patientId,
+        medicine_name: m.name,
+        dosage: m.dosage,
+        medicine_form: m.form,
+        times_per_day: m.timesPerDay,
+        schedule: generateSchedule(m.timesPerDay),
+        duration_days: m.durationDays,
+        start_date: todayDate,
+        end_date: m.durationDays ? addDays(new Date(), m.durationDays).toISOString().split('T')[0] : null,
+        special_instructions: m.instructions || null,
+      }));
+
+      const { error: medsErr } = await supabase.from('prescription_medicines').insert(medsRows);
+      if (medsErr) throw medsErr;
+
+      toast.success('💊 Prescription issued! Patient can now see it on their dashboard.');
+      setShowRxModal(false);
+      setRxForm({ diagnosis: '', instructions: '', feedbackDays: 7, requestFeedback: true, validDays: 30, medicines: [{ name: '', dosage: '', form: 'Tablet', timesPerDay: 3, durationDays: 7, instructions: '' }] });
+      fetchPatientRx(patientId);
+    } catch (e: any) {
+      toast.error('Error: ' + (e.message || 'Failed'));
+    } finally {
+      setRxSaving(false);
+    }
+  };
+
   const openDrawer = (p: any) => {
     setSelectedPatient(p);
     setDrawerTab('overview');
     fetchNotes(p.patients?.id || p.patient_id);
     checkPasswordStatus(p.patients?.id || p.patient_id);
+    fetchPatientRx(p.patients?.id || p.patient_id);
     if (p.id) fetchTreatment(p.id);
   };
 
@@ -454,6 +547,7 @@ const HospitalPatients = () => {
                       <div className="flex gap-1">
                         <button onClick={() => openDrawer(p)} className="p-1.5 rounded hover:bg-gray-100" title="View"><Eye size={14} style={{ color: '#0891B2' }} /></button>
                         <button onClick={() => { openDrawer(p); setDrawerTab('notes'); }} className="p-1.5 rounded hover:bg-gray-100" title="Notes"><FileText size={14} style={{ color: '#F59E0B' }} /></button>
+                        <button onClick={() => { openDrawer(p); setDrawerTab('prescriptions'); }} className="p-1.5 rounded hover:bg-gray-100" title="Prescriptions"><Pill size={14} style={{ color: '#10B981' }} /></button>
                         {p.relationship_type === 'Admitted' && (
                           <button onClick={() => { setDischargePatient(p); setShowDischargeModal(true); }} className="p-1.5 rounded hover:bg-gray-100" title="Discharge"><DischargeIcon size={14} style={{ color: '#10B981' }} /></button>
                         )}
@@ -508,6 +602,7 @@ const HospitalPatients = () => {
                   <TabsTrigger value="vitals" className="text-[11px]">Vitals</TabsTrigger>
                   <TabsTrigger value="notes" className="text-[11px]">Notes</TabsTrigger>
                   <TabsTrigger value="treatment" className="text-[11px]">Active Treatment</TabsTrigger>
+                  <TabsTrigger value="prescriptions" className="text-[11px]">💊 Prescriptions</TabsTrigger>
                   <TabsTrigger value="billing" className="text-[11px]">Billing</TabsTrigger>
                 </TabsList>
 
@@ -852,6 +947,190 @@ const HospitalPatients = () => {
                           </div>
                         </div>
                       )}
+                    </div>
+                  )}
+                </TabsContent>
+
+                {/* ===== TAB: PRESCRIPTIONS ===== */}
+                <TabsContent value="prescriptions">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <p className="text-[14px] font-bold" style={{ color: '#1E293B' }}>💊 Prescriptions</p>
+                      <button
+                        onClick={() => {
+                          setShowRxModal(true);
+                          setRxForm({ diagnosis: selectedPatient.diagnosis || '', instructions: '', feedbackDays: 7, requestFeedback: true, validDays: 30, medicines: [{ name: '', dosage: '', form: 'Tablet', timesPerDay: 3, durationDays: 7, instructions: '' }] });
+                        }}
+                        className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[12px] font-bold text-white"
+                        style={{ background: '#F59E0B' }}
+                      >
+                        <Plus size={14} /> Write Prescription
+                      </button>
+                    </div>
+
+                    {patientRxList.length === 0 ? (
+                      <div className="text-center py-8">
+                        <Pill size={32} className="mx-auto mb-2" style={{ color: '#D1EBF1' }} />
+                        <p className="text-[13px]" style={{ color: '#94A3B8' }}>No prescriptions issued for this patient yet.</p>
+                        <button
+                          onClick={() => {
+                            setShowRxModal(true);
+                            setRxForm({ diagnosis: selectedPatient.diagnosis || '', instructions: '', feedbackDays: 7, requestFeedback: true, validDays: 30, medicines: [{ name: '', dosage: '', form: 'Tablet', timesPerDay: 3, durationDays: 7, instructions: '' }] });
+                          }}
+                          className="text-[13px] font-medium mt-2" style={{ color: '#0891B2' }}
+                        >
+                          Write first prescription →
+                        </button>
+                      </div>
+                    ) : (
+                      patientRxList.map((rx: any) => {
+                        const fb = rxFeedbacks.find((f: any) => f.prescription_id === rx.id);
+                        const statusColor: Record<string, { bg: string; color: string }> = {
+                          Active: { bg: '#DCFCE7', color: '#16A34A' },
+                          Completed: { bg: '#E0E7FF', color: '#4F46E5' },
+                          Discontinued: { bg: '#FEE2E2', color: '#DC2626' },
+                        };
+                        const sc = statusColor[rx.status] || { bg: '#F1F5F9', color: '#64748B' };
+                        const ratingEmojis = ['', '😞', '😕', '😐', '🙂', '😊'];
+
+                        return (
+                          <div key={rx.id} className="p-4 rounded-xl" style={{ border: '1px solid #E2EEF1', background: '#FAFCFD' }}>
+                            <div className="flex items-start justify-between mb-2">
+                              <div>
+                                <p className="text-[13px] font-bold" style={{ color: '#1E293B' }}>Dr. {rx.doctor_name}</p>
+                                <p className="text-[11px]" style={{ color: '#64748B' }}>
+                                  {rx.prescription_date ? format(new Date(rx.prescription_date), 'dd MMM yyyy') : ''}
+                                  {rx.valid_until ? ' · Valid until ' + format(new Date(rx.valid_until), 'dd MMM') : ''}
+                                </p>
+                              </div>
+                              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold" style={{ background: sc.bg, color: sc.color }}>
+                                {rx.status || 'Active'}
+                              </span>
+                            </div>
+
+                            <div className="mb-2">
+                              <p className="text-[12px] font-bold" style={{ color: '#475569' }}>Diagnosis</p>
+                              <p className="text-[13px]" style={{ color: '#1E293B' }}>{rx.diagnosis}</p>
+                            </div>
+
+                            {rx.general_instructions && (
+                              <p className="text-[12px] italic mb-2" style={{ color: '#64748B' }}>📋 {rx.general_instructions}</p>
+                            )}
+
+                            {/* Feedback status */}
+                            {fb ? (
+                              <div className="p-3 rounded-lg" style={{ background: '#F0FDF4', border: '1px solid #BBF7D0' }}>
+                                <p className="text-[12px] font-bold mb-1" style={{ color: '#16A34A' }}>✅ Feedback Received</p>
+                                <div className="flex items-center gap-3 text-[12px]">
+                                  <span>{ratingEmojis[fb.improvement_rating] || '—'} {fb.improvement_rating}/5</span>
+                                  <span>Adherence: {fb.adherence_rating}</span>
+                                  <span>Pain: {fb.pain_level_before} → {fb.pain_level_after}</span>
+                                </div>
+                                {fb.had_side_effects && (
+                                  <p className="text-[11px] mt-1" style={{ color: '#D97706' }}>⚠️ Side effects: {(fb.side_effects || []).join(', ')}</p>
+                                )}
+                                {fb.patient_notes && <p className="text-[11px] mt-1 italic" style={{ color: '#475569' }}>"{fb.patient_notes}"</p>}
+                              </div>
+                            ) : rx.feedback_requested ? (
+                              <div className="p-2 rounded-lg" style={{ background: '#FFFBEB', border: '1px solid #FDE68A' }}>
+                                <p className="text-[11px] font-medium" style={{ color: '#92400E' }}>⏳ Feedback requested — due {rx.feedback_deadline_date ? format(new Date(rx.feedback_deadline_date), 'dd MMM yyyy') : 'soon'}</p>
+                              </div>
+                            ) : null}
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+
+                  {/* Write Prescription Modal */}
+                  {showRxModal && (
+                    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+                      <div className="absolute inset-0 bg-black/30" onClick={() => setShowRxModal(false)} />
+                      <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-[560px] flex flex-col" style={{ maxHeight: '88vh' }}>
+                        <JharokhaArch color="#F59E0B" opacity={0.18} />
+                        <div className="p-5 border-b flex-shrink-0 flex items-center justify-between" style={{ borderColor: '#E2EEF1' }}>
+                          <div>
+                            <h3 className="text-[16px] font-bold" style={{ color: '#1E293B' }}>💊 Write Prescription</h3>
+                            <p className="text-[12px]" style={{ color: '#64748B' }}>for {selectedPatient.patients?.full_name}</p>
+                          </div>
+                          <button onClick={() => setShowRxModal(false)}><X size={18} style={{ color: '#64748B' }} /></button>
+                        </div>
+
+                        <div className="p-5 overflow-y-auto flex-1 space-y-4">
+                          {/* Diagnosis */}
+                          <div>
+                            <label className="field-label">Diagnosis *</label>
+                            <textarea className="field-input" rows={2} placeholder="e.g. Viral fever with throat infection" value={rxForm.diagnosis} onChange={(e) => setRxForm({ ...rxForm, diagnosis: e.target.value })} />
+                          </div>
+
+                          {/* Medicines */}
+                          <div>
+                            <div className="flex items-center justify-between mb-2">
+                              <label className="field-label mb-0">Medicines</label>
+                              <button onClick={() => setRxForm({ ...rxForm, medicines: [...rxForm.medicines, { name: '', dosage: '', form: 'Tablet', timesPerDay: 3, durationDays: 7, instructions: '' }] })} className="text-[11px] font-bold flex items-center gap-1" style={{ color: '#0891B2' }}><Plus size={12} /> Add</button>
+                            </div>
+                            {rxForm.medicines.map((m: any, idx: number) => (
+                              <div key={idx} className="p-3 rounded-lg mb-2" style={{ border: '1px solid #E2EEF1', background: '#FAFCFD' }}>
+                                <div className="grid grid-cols-3 gap-2 mb-2">
+                                  <input className="field-input" placeholder="Medicine *" value={m.name} onChange={(e) => { const u = [...rxForm.medicines]; u[idx] = { ...m, name: e.target.value }; setRxForm({ ...rxForm, medicines: u }); }} />
+                                  <input className="field-input" placeholder="Dosage *" value={m.dosage} onChange={(e) => { const u = [...rxForm.medicines]; u[idx] = { ...m, dosage: e.target.value }; setRxForm({ ...rxForm, medicines: u }); }} />
+                                  <select className="field-input" value={m.form} onChange={(e) => { const u = [...rxForm.medicines]; u[idx] = { ...m, form: e.target.value }; setRxForm({ ...rxForm, medicines: u }); }}>
+                                    {['Tablet', 'Capsule', 'Syrup', 'Injection', 'Drops', 'Cream', 'Inhaler'].map(f => <option key={f} value={f}>{f}</option>)}
+                                  </select>
+                                </div>
+                                <div className="grid grid-cols-2 gap-2 mb-2">
+                                  <div>
+                                    <label className="text-[10px]" style={{ color: '#64748B' }}>Duration (days)</label>
+                                    <input className="field-input" type="number" min="1" value={m.durationDays} onChange={(e) => { const u = [...rxForm.medicines]; u[idx] = { ...m, durationDays: parseInt(e.target.value) || 7 }; setRxForm({ ...rxForm, medicines: u }); }} />
+                                  </div>
+                                  <div>
+                                    <label className="text-[10px]" style={{ color: '#64748B' }}>Times/day</label>
+                                    <select className="field-input" value={m.timesPerDay} onChange={(e) => { const u = [...rxForm.medicines]; u[idx] = { ...m, timesPerDay: parseInt(e.target.value) }; setRxForm({ ...rxForm, medicines: u }); }}>
+                                      {[1, 2, 3, 4].map(n => <option key={n} value={n}>{n}×</option>)}
+                                    </select>
+                                  </div>
+                                </div>
+                                <input className="field-input" placeholder="Special instructions (optional)" value={m.instructions} onChange={(e) => { const u = [...rxForm.medicines]; u[idx] = { ...m, instructions: e.target.value }; setRxForm({ ...rxForm, medicines: u }); }} />
+                                {rxForm.medicines.length > 1 && (
+                                  <button onClick={() => setRxForm({ ...rxForm, medicines: rxForm.medicines.filter((_: any, i: number) => i !== idx) })} className="text-[10px] font-medium mt-1" style={{ color: '#EF4444' }}>Remove ✕</button>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Instructions */}
+                          <div>
+                            <label className="field-label">General Instructions</label>
+                            <textarea className="field-input" rows={2} placeholder="Drink water, avoid cold food..." value={rxForm.instructions} onChange={(e) => setRxForm({ ...rxForm, instructions: e.target.value })} />
+                          </div>
+
+                          {/* Feedback */}
+                          <div className="flex items-center gap-4">
+                            <label className="flex items-center gap-2 text-[12px] font-medium">
+                              <input type="checkbox" checked={rxForm.requestFeedback} onChange={(e) => setRxForm({ ...rxForm, requestFeedback: e.target.checked })} />
+                              Request feedback
+                            </label>
+                            {rxForm.requestFeedback && (
+                              <div className="flex items-center gap-1">
+                                <span className="text-[11px]" style={{ color: '#64748B' }}>after</span>
+                                <input className="field-input w-14 text-center" type="number" min={1} value={rxForm.feedbackDays} onChange={(e) => setRxForm({ ...rxForm, feedbackDays: parseInt(e.target.value) || 7 })} />
+                                <span className="text-[11px]" style={{ color: '#64748B' }}>days</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="p-4 border-t flex-shrink-0" style={{ borderColor: '#E2EEF1' }}>
+                          <button
+                            onClick={submitPrescription}
+                            disabled={rxSaving}
+                            className="w-full py-2.5 rounded-lg text-[13px] font-bold text-white disabled:opacity-50 flex items-center justify-center gap-2"
+                            style={{ background: '#0891B2' }}
+                          >
+                            {rxSaving ? <><Loader2 size={14} className="animate-spin" /> Issuing...</> : '💊 Issue Prescription'}
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </TabsContent>

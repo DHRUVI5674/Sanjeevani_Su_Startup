@@ -39,6 +39,8 @@ import HospitalDocuments from "./pages/hospital/HospitalDocuments";
 import HospitalSettings from "./pages/hospital/HospitalSettings";
 import HospitalPending from "./pages/hospital/HospitalPending";
 import HospitalRejected from "./pages/hospital/HospitalRejected";
+import HospitalPrescriptions from "./pages/hospital/HospitalPrescriptions";
+import HospitalPrescriptionAnalytics from "./pages/hospital/HospitalPrescriptionAnalytics";
 import PublicQRProfile from "./pages/PublicQRProfile";
 
 const queryClient = new QueryClient();
@@ -73,6 +75,8 @@ const App = () => (
             <Route index element={<HospitalOverview />} />
             <Route path="patients" element={<HospitalPatients />} />
             <Route path="appointments" element={<HospitalAppointments />} />
+            <Route path="prescriptions" element={<HospitalPrescriptions />} />
+            <Route path="prescriptions/analytics" element={<HospitalPrescriptionAnalytics />} />
             <Route path="emergency" element={<HospitalEmergency />} />
             <Route path="beds" element={<HospitalBeds />} />
             <Route path="staff" element={<HospitalStaff />} />
