@@ -5,14 +5,14 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import type { PatientProfile } from './PatientProtectedRoute';
 
 const navItems = [
-  { labelKey: 'Overview', icon: Home, path: '/patient/dashboard' },
-  { labelKey: 'Medical Records', icon: Pill, path: '/patient/dashboard/records' },
-  { labelKey: 'Lab Reports', icon: ClipboardList, path: '/patient/dashboard/reports' },
-  { labelKey: 'Appointments', icon: Calendar, path: '/patient/dashboard/appointments' },
-  { labelKey: 'Find Doctors', icon: Search, path: '/patient/dashboard/find' },
-  { labelKey: 'Find Pharmacy', icon: Store, path: '/patient/dashboard/pharmacy' },
-  { labelKey: 'Emergency Profile', icon: ShieldAlert, path: '/patient/dashboard/emergency' },
-  { labelKey: 'Settings', icon: Settings, path: '/patient/dashboard/settings' },
+  { labelKey: 'sidebar.overview', icon: Home, path: '/patient/dashboard' },
+  { labelKey: 'sidebar.medicalRecords', icon: Pill, path: '/patient/dashboard/records' },
+  { labelKey: 'sidebar.labReports', icon: ClipboardList, path: '/patient/dashboard/reports' },
+  { labelKey: 'sidebar.appointments', icon: Calendar, path: '/patient/dashboard/appointments' },
+  { labelKey: 'sidebar.findDoctors', icon: Search, path: '/patient/dashboard/find' },
+  { labelKey: 'sidebar.findPharmacy', icon: Store, path: '/patient/dashboard/pharmacy' },
+  { labelKey: 'sidebar.emergencyProfile', icon: ShieldAlert, path: '/patient/dashboard/emergency' },
+  { labelKey: 'sidebar.settings', icon: Settings, path: '/patient/dashboard/settings' },
 ];
 
 const LotusIcon = () => (
@@ -63,17 +63,17 @@ const PatientSidebar = ({ patient, mobileOpen, onMobileClose, onShowQR }: Props)
         </div>
 
         <p className="text-[13px] mb-2" style={{ color: '#64748B', fontFamily: 'Inter, sans-serif' }}>
-          {t('Welcome')}, {firstName}
+          {t('auth.welcome')}, {firstName}
         </p>
         {patient.abha_card_no ? (
           <span className="inline-block text-[11px] font-semibold px-3 py-1 rounded-md" style={{ background: '#0891B2', color: '#fff' }}>
-            {t('ABHA Linked')}
+            {t('auth.abhaLinked')}
           </span>
         ) : (
           <button onClick={() => navigate('/patient/dashboard/settings')}
             className="inline-block text-[11px] font-semibold px-3 py-1 rounded-md"
             style={{ border: '1px solid #F59E0B', color: '#F59E0B' }}>
-            {t('Link ABHA')}
+            {t('auth.linkAbha')}
           </button>
         )}
       </div>
@@ -108,8 +108,8 @@ const PatientSidebar = ({ patient, mobileOpen, onMobileClose, onShowQR }: Props)
           style={{ background: 'rgba(8,145,178,0.08)', border: '1px solid #0891B2' }}>
           <QrCode size={24} style={{ color: '#0891B2' }} />
           <div className="text-left">
-            <p className="text-[13px] font-bold" style={{ color: '#0891B2' }}>{t('My Emergency QR')}</p>
-            <p className="text-[11px]" style={{ color: '#64748B' }}>{t('Tap to view & download')}</p>
+            <p className="text-[13px] font-bold" style={{ color: '#0891B2' }}>{t('emergency.myQR')}</p>
+            <p className="text-[11px]" style={{ color: '#64748B' }}>{t('emergency.tapToView')}</p>
           </div>
         </button>
       </div>
@@ -121,7 +121,7 @@ const PatientSidebar = ({ patient, mobileOpen, onMobileClose, onShowQR }: Props)
           {patient.email}
         </p>
         <button onClick={handleLogout} className="text-[13px] font-medium mt-2 transition-colors hover:opacity-80" style={{ color: '#EF4444', fontFamily: 'Inter, sans-serif' }}>
-          <LogOut size={14} className="inline mr-1.5" /> {t('Logout')}
+          <LogOut size={14} className="inline mr-1.5" /> {t('auth.logout')}
         </button>
       </div>
     </div>
@@ -151,4 +151,3 @@ const PatientSidebar = ({ patient, mobileOpen, onMobileClose, onShowQR }: Props)
 };
 
 export default PatientSidebar;
-

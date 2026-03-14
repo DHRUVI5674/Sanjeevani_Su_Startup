@@ -7,13 +7,13 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import type { PatientProfile } from './PatientProtectedRoute';
 
 const routeKeys: Record<string, string> = {
-  '/patient/dashboard': 'Overview',
-  '/patient/dashboard/records': 'Medical Records',
-  '/patient/dashboard/reports': 'Lab Reports',
-  '/patient/dashboard/appointments': 'Appointments',
-  '/patient/dashboard/find': 'Find Doctors',
-  '/patient/dashboard/emergency': 'Emergency Profile',
-  '/patient/dashboard/settings': 'Settings',
+  '/patient/dashboard': 'sidebar.overview',
+  '/patient/dashboard/records': 'sidebar.medicalRecords',
+  '/patient/dashboard/reports': 'sidebar.labReports',
+  '/patient/dashboard/appointments': 'sidebar.appointments',
+  '/patient/dashboard/find': 'sidebar.findDoctors',
+  '/patient/dashboard/emergency': 'sidebar.emergencyProfile',
+  '/patient/dashboard/settings': 'sidebar.settings',
 };
 
 interface Props {
@@ -25,7 +25,7 @@ const PatientTopBar = ({ patient, onMenuClick }: Props) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const routeKey = routeKeys[location.pathname] || 'Dashboard';
+  const routeKey = routeKeys[location.pathname] || 'topbar.dashboard';
   const pageLabel = t(routeKey);
   const initials = patient.full_name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'P';
 
@@ -41,7 +41,7 @@ const PatientTopBar = ({ patient, onMenuClick }: Props) => {
       </button>
 
       <div className="flex items-center gap-1.5 text-[13px]" style={{ fontFamily: 'Inter, sans-serif' }}>
-        <span style={{ color: '#64748B' }}>{t('My Health')}</span>
+        <span style={{ color: '#64748B' }}>{t('topbar.myHealth')}</span>
         <span style={{ color: '#64748B' }}>/</span>
         <span className="font-semibold" style={{ color: '#1E293B' }}>{pageLabel}</span>
       </div>
@@ -66,4 +66,3 @@ const PatientTopBar = ({ patient, onMenuClick }: Props) => {
 };
 
 export default PatientTopBar;
-

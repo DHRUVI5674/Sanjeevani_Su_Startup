@@ -69,10 +69,10 @@ const PatientPrescriptionsOverview = ({ patientId }: { patientId: string }) => {
           <div className="p-5 flex flex-col md:flex-row gap-4 items-center justify-between">
             <div className="flex-1">
               <h3 className="text-[16px] flex items-center gap-2 font-bold mb-1" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', color: '#B45309' }}>
-                📋 Dr. {showFeedbackFor.doctor_name} {t('wants to know how you are doing')}
+                📋 Dr. {showFeedbackFor.doctor_name} {t('prescriptions.doctorWantsToKnow')}
               </h3>
               <p className="text-[13px]" style={{ color: '#78350F' }}>
-                {t('Please take 2 minutes to share how you feel.')}
+                {t('prescriptions.shareFeedback')}
               </p>
             </div>
             <button 
@@ -82,7 +82,7 @@ const PatientPrescriptionsOverview = ({ patientId }: { patientId: string }) => {
                 setShowFeedbackFor(null);
               }}
               className="px-5 py-2.5 rounded-lg text-[13px] font-bold text-white whitespace-nowrap" style={{ background: '#F59E0B' }}>
-              {t('Fill Feedback Form')}
+              {t('prescriptions.fillFeedback')}
             </button>
           </div>
           {/* We'll render PatientFeedbackForm conditionally over the page */}
@@ -95,11 +95,11 @@ const PatientPrescriptionsOverview = ({ patientId }: { patientId: string }) => {
         <JharokhaArch color="#10B981" opacity={0.18} />
         <div className="p-5">
           <h3 className="text-base font-bold mb-4" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', color: '#1E293B' }}>
-            💊 {t("Today's Medicines")} — {format(new Date(), 'dd MMMM yyyy')}
+            💊 {t('prescriptions.todayMedicines')} — {format(new Date(), 'dd MMMM yyyy')}
           </h3>
           
           {scheduledMedicines.length === 0 ? (
-            <p className="text-[13px] text-center py-6" style={{ color: '#94A3B8' }}>{t('No medicines scheduled for today.')}</p>
+            <p className="text-[13px] text-center py-6" style={{ color: '#94A3B8' }}>{t('prescriptions.noMedicines')}</p>
           ) : (
             <div className="space-y-4">
               {scheduledMedicines.map(group => {
@@ -142,30 +142,30 @@ const PatientPrescriptionsOverview = ({ patientId }: { patientId: string }) => {
       {/* Prescriptions List */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-base font-bold" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', color: '#1E293B' }}>💊 {t('My Prescriptions')}</h3>
-          <button className="text-[13px] font-medium" style={{ color: '#0891B2' }}>{t('View All')}</button>
+          <h3 className="text-base font-bold" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', color: '#1E293B' }}>💊 {t('prescriptions.myPrescriptions')}</h3>
+          <button className="text-[13px] font-medium" style={{ color: '#0891B2' }}>{t('prescriptions.viewAll')}</button>
         </div>
         
         {prescriptions.length === 0 ? (
           <div className="bg-white rounded-xl p-8 text-center" style={{ border: '1px solid #E2EEF1' }}>
-            <p className="text-[13px]" style={{ color: '#94A3B8' }}>{t('No active prescriptions.')}</p>
+            <p className="text-[13px]" style={{ color: '#94A3B8' }}>{t('prescriptions.noActive')}</p>
           </div>
         ) : (
           <div className="space-y-3">
             {prescriptions.map(rx => (
               <div key={rx.id} className="bg-white rounded-xl p-4 flex flex-col sm:flex-row gap-4" style={{ border: '1px solid #E2EEF1' }}>
                 <div className="flex-1">
-                  <p className="text-[14px] font-bold mb-1" style={{ color: '#1E293B' }}>{t('Prescribed by Dr.')} {rx.doctor_name}</p>
+                  <p className="text-[14px] font-bold mb-1" style={{ color: '#1E293B' }}>{t('prescriptions.prescribedBy')} {rx.doctor_name}</p>
                   <p className="text-[12px] mb-3" style={{ color: '#64748B' }}>{format(new Date(rx.prescription_date), 'dd MMMM yyyy')}</p>
                   
                   <div className="mb-3">
-                    <p className="text-[12px] font-bold" style={{ color: '#475569' }}>{t('Diagnosis:')}</p>
+                    <p className="text-[12px] font-bold" style={{ color: '#475569' }}>{t('prescriptions.diagnosis')}</p>
                     <p className="text-[13px]" style={{ color: '#1E293B' }}>{rx.diagnosis}</p>
                   </div>
 
                   <div className="flex items-center gap-3">
                      <span className="text-[11px] font-bold px-2 py-1 rounded" style={{ background: '#ECFDF5', color: '#10B981' }}>
-                      🟢 {t('Active')}
+                      🟢 {t('cards.active')}
                      </span>
                      {rx.valid_until && (
                        <span className="text-[11px]" style={{ color: '#64748B' }}>
@@ -175,7 +175,7 @@ const PatientPrescriptionsOverview = ({ patientId }: { patientId: string }) => {
                   </div>
                 </div>
                 <div className="flex sm:flex-col gap-2 justify-end sm:justify-start">
-                  <button className="px-3 py-1.5 rounded-lg text-[12px] font-medium" style={{ background: '#F1F5F9', color: '#475569' }}>{t('View Full')}</button>
+                  <button className="px-3 py-1.5 rounded-lg text-[12px] font-medium" style={{ background: '#F1F5F9', color: '#475569' }}>{t('prescriptions.viewFull')}</button>
                   <button
                     onClick={async () => {
                       const { data: meds } = await supabase.from('prescription_medicines').select('*').eq('prescription_id', rx.id);
@@ -213,7 +213,7 @@ const PatientPrescriptionsOverview = ({ patientId }: { patientId: string }) => {
                     <button 
                       onClick={() => setShowFeedbackFor(rx)} 
                       className="px-3 py-1.5 rounded-lg text-[12px] font-bold text-white whitespace-nowrap" style={{ background: '#F59E0B' }}>
-                      {t('Give Feedback')}
+                      {t('prescriptions.giveFeedback')}
                     </button>
                   )}
                 </div>

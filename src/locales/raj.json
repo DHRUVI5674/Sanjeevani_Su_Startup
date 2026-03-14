@@ -1,0 +1,95 @@
+{
+  "sidebar": {
+    "overview": "झांकी",
+    "medicalRecords": "मेडिकल रिकॉर्ड",
+    "labReports": "लैब रिपोर्ट",
+    "appointments": "अपॉइन्टमेन्ट",
+    "findDoctors": "डॉक्टर ढूंढो",
+    "findPharmacy": "दवाखानो ढूंढो",
+    "emergencyProfile": "इमरजेंसी प्रोफाइल",
+    "settings": "सेटिंग्स"
+  },
+  "topbar": {
+    "myHealth": "म्हारो स्वास्थ्य",
+    "dashboard": "डैशबोर्ड"
+  },
+  "welcome": {
+    "greeting": "राम राम सा",
+    "profileStatus": "थारी स्वास्थ्य प्रोफाइल {{completeness}}% पूरो है।",
+    "completeProfile": "थारी प्रोफाइल पूरी करो →"
+  },
+  "emergency": {
+    "title": "इमरजेंसी प्रोफाइल",
+    "showQR": "इमरजेंसी QR दिखाओ",
+    "myQR": "म्हारो इमरजेंसी QR",
+    "tapToView": "देखण अर डाउनलोड करण खातर टैप करो"
+  },
+  "cards": {
+    "activeMedications": "चालू दवाइयाँ",
+    "conditions": "बीमारियाँ",
+    "allergies": "एलर्जी",
+    "insurance": "बीमा",
+    "noneAdded": "कोई नीं जोड़्यो",
+    "noneRecorded": "कोई रिकॉर्ड नीं",
+    "notEnrolled": "भरतू नहीं करायो",
+    "active": "चालू",
+    "viewAll": "सगळा देखो →"
+  },
+  "appointments": {
+    "upcoming": "आण आळी अपॉइन्टमेन्ट",
+    "book": "अपॉइन्टमेन्ट बुक करो +",
+    "noUpcoming": "कोई आण आळी अपॉइन्टमेन्ट नीं।",
+    "bookFirst": "थारी पहली अपॉइन्टमेन्ट बुक करो →"
+  },
+  "reports": {
+    "recent": "नवी रिपोर्ट",
+    "upload": "रिपोर्ट अपलोड करो +",
+    "noReports": "अभी कोई रिपोर्ट अपलोड नीं करी।",
+    "uploadFirst": "थारी पहली रिपोर्ट अपलोड करो →",
+    "abnormal": "गड़बड़"
+  },
+  "vitals": {
+    "tracker": "वाइटल ट्रैकर",
+    "logReading": "रीडिंग दर्ज करो",
+    "noVitals": "अभी कोई वाइटल रिकार्ड नीं।",
+    "logFirst": "थारी पहली रीडिंग दर्ज करो →",
+    "bpLast7": "ब्लड प्रेशर (पिछला 7)",
+    "sugarLast7": "ब्लड शुगर (पिछला 7)",
+    "logTitle": "वाइटल रीडिंग दर्ज करो",
+    "bloodPressure": "🩸 ब्लड प्रेशर",
+    "bloodSugar": "🍬 ब्लड शुगर",
+    "systolic": "सिस्टोलिक (mmHg)",
+    "diastolic": "डायस्टोलिक (mmHg)",
+    "sugarMgdl": "ब्लड शुगर (mg/dL)",
+    "notes": "नोट्स (ऐच्छिक)",
+    "saveReading": "रीडिंग सेव करो",
+    "saving": "सेव हो रह्यो है...",
+    "cancel": "रद्द करो"
+  },
+  "prescriptions": {
+    "myPrescriptions": "म्हारा प्रिस्क्रिप्शन",
+    "viewAll": "सगळा देखो →",
+    "noActive": "कोई चालू प्रिस्क्रिप्शन नीं।",
+    "prescribedBy": "डॉ. द्वारा लिख्यो",
+    "diagnosis": "निदान:",
+    "viewFull": "पूरो देखो",
+    "giveFeedback": "फीडबैक दो",
+    "fillFeedback": "फीडबैक फॉर्म भरो",
+    "validUntil": "तक वैध",
+    "todayMedicines": "आज री दवाइयाँ",
+    "noMedicines": "आज खातर कोई दवाई नीं।",
+    "doctorWantsToKnow": "जाणना चावे कि थे कियां लाग रह्यो है",
+    "shareFeedback": "कृपया 2 मिनट लेकर बताओ कि थे कियां लाग रह्यो है।"
+  },
+  "auth": {
+    "welcome": "पधारो",
+    "abhaLinked": "ABHA जुड़्यो ✓",
+    "linkAbha": "ABHA जोड़ो →",
+    "logout": "लॉगआउट"
+  },
+  "buttons": {
+    "downloadProfile": "पूरी प्रोफाइल डाउनलोड करो",
+    "generatingPdf": "PDF बण रह्यो है..."
+  },
+  "language": "भासा"
+}

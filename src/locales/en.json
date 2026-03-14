@@ -1,0 +1,95 @@
+{
+  "sidebar": {
+    "overview": "Overview",
+    "medicalRecords": "Medical Records",
+    "labReports": "Lab Reports",
+    "appointments": "Appointments",
+    "findDoctors": "Find Doctors",
+    "findPharmacy": "Find Pharmacy",
+    "emergencyProfile": "Emergency Profile",
+    "settings": "Settings"
+  },
+  "topbar": {
+    "myHealth": "My Health",
+    "dashboard": "Dashboard"
+  },
+  "welcome": {
+    "greeting": "Good morning",
+    "profileStatus": "Your health profile is {{completeness}}% complete.",
+    "completeProfile": "Complete your profile →"
+  },
+  "emergency": {
+    "title": "Emergency Profile",
+    "showQR": "Show Emergency QR",
+    "myQR": "My Emergency QR",
+    "tapToView": "Tap to view & download"
+  },
+  "cards": {
+    "activeMedications": "Active Medications",
+    "conditions": "Conditions",
+    "allergies": "Allergies",
+    "insurance": "Insurance",
+    "noneAdded": "None added",
+    "noneRecorded": "None recorded",
+    "notEnrolled": "Not enrolled",
+    "active": "Active",
+    "viewAll": "View all →"
+  },
+  "appointments": {
+    "upcoming": "Upcoming Appointments",
+    "book": "Book Appointment +",
+    "noUpcoming": "No upcoming appointments.",
+    "bookFirst": "Book your first appointment →"
+  },
+  "reports": {
+    "recent": "Recent Reports",
+    "upload": "Upload Report +",
+    "noReports": "No reports uploaded yet.",
+    "uploadFirst": "Upload your first report →",
+    "abnormal": "Abnormal"
+  },
+  "vitals": {
+    "tracker": "Vitals Tracker",
+    "logReading": "Log Reading",
+    "noVitals": "No vitals recorded yet.",
+    "logFirst": "Log your first reading →",
+    "bpLast7": "Blood Pressure (last 7)",
+    "sugarLast7": "Blood Sugar (last 7)",
+    "logTitle": "Log Vital Reading",
+    "bloodPressure": "🩸 Blood Pressure",
+    "bloodSugar": "🍬 Blood Sugar",
+    "systolic": "Systolic (mmHg)",
+    "diastolic": "Diastolic (mmHg)",
+    "sugarMgdl": "Blood Sugar (mg/dL)",
+    "notes": "Notes (optional)",
+    "saveReading": "Save Reading",
+    "saving": "Saving...",
+    "cancel": "Cancel"
+  },
+  "prescriptions": {
+    "myPrescriptions": "My Prescriptions",
+    "viewAll": "View All →",
+    "noActive": "No active prescriptions.",
+    "prescribedBy": "Prescribed by Dr.",
+    "diagnosis": "Diagnosis:",
+    "viewFull": "View Full",
+    "giveFeedback": "Give Feedback",
+    "fillFeedback": "Fill Feedback Form",
+    "validUntil": "Valid until",
+    "todayMedicines": "Today's Medicines",
+    "noMedicines": "No medicines scheduled for today.",
+    "doctorWantsToKnow": "wants to know how you're doing",
+    "shareFeedback": "Please take 2 minutes to share how you feel."
+  },
+  "auth": {
+    "welcome": "Welcome",
+    "abhaLinked": "ABHA Linked ✓",
+    "linkAbha": "Link ABHA →",
+    "logout": "Logout"
+  },
+  "buttons": {
+    "downloadProfile": "Download Full Profile",
+    "generatingPdf": "Generating PDF..."
+  },
+  "language": "Language"
+}

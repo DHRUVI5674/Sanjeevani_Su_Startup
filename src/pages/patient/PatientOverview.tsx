@@ -119,17 +119,17 @@ const PatientOverview = () => {
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center gap-4">
           <div className="flex-1">
             <h1 className="text-[22px] font-bold mb-1" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', color: '#1E293B' }}>
-              {t('Good morning')}, {firstName} 👋
+              {t('welcome.greeting')}, {firstName} 👋
             </h1>
             <p className="text-[14px] mb-3" style={{ color: '#64748B' }}>
-              {t('Your health profile is')} {completeness}{t('% complete.')}
+              {t('welcome.profileStatus', { completeness })}
             </p>
             <div className="w-full max-w-xs h-1 rounded-full" style={{ background: '#E2EEF1' }}>
               <div className="h-full rounded-full transition-all" style={{ width: `${completeness}%`, background: '#0891B2' }} />
             </div>
             {completeness < 100 && (
               <button onClick={() => navigate('/patient/dashboard/settings')} className="text-[13px] font-medium mt-2" style={{ color: '#0891B2' }}>
-                {t('Complete your profile')}
+                {t('welcome.completeProfile')}
               </button>
             )}
           </div>
@@ -153,7 +153,7 @@ const PatientOverview = () => {
               style={{ background: '#0891B2' }}
             >
               {downloadingProfile ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
-              {downloadingProfile ? t('Generating PDF...') : t('Download Full Profile')}
+              {downloadingProfile ? t('buttons.generatingPdf') : t('buttons.downloadProfile')}
             </button>
           </div>
         </div>
@@ -164,7 +164,7 @@ const PatientOverview = () => {
         <JharokhaArch color="#EF4444" opacity={0.18} />
         <div className="p-5 flex flex-col md:flex-row gap-4">
           <div className="flex-1">
-            <h3 className="text-base font-bold mb-2" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', color: '#1E293B' }}>{t('Emergency Profile Card')}</h3>
+            <h3 className="text-base font-bold mb-2" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', color: '#1E293B' }}>{t('emergency.title')}</h3>
             {patient.blood_group && (
               <span className="inline-block px-4 py-1 rounded-full text-[20px] font-bold mb-2" style={{ background: '#FEF2F2', color: '#EF4444', fontFamily: '"Plus Jakarta Sans", sans-serif' }}>
                 {patient.blood_group}
@@ -187,7 +187,7 @@ const PatientOverview = () => {
           <div className="flex flex-col items-center gap-2">
             <button onClick={() => navigate('/patient/dashboard/emergency')}
               className="px-4 py-2 rounded-lg text-[13px] font-semibold text-white" style={{ background: '#EF4444' }}>
-              {t('Show Emergency QR')}
+              {t('emergency.showQR')}
             </button>
           </div>
         </div>
@@ -195,18 +195,18 @@ const PatientOverview = () => {
 
       {/* Health Summary — 4 Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <SummaryCard icon={<Pill size={20} style={{ color: '#0891B2' }} />} label={t('Active Medications')} value={medications.length} color="#0891B2"
-          detail={medications.slice(0, 3).map(m => m.medicine_name).join(', ') || t('None added')}
+        <SummaryCard icon={<Pill size={20} style={{ color: '#0891B2' }} />} label={t('cards.activeMedications')} value={medications.length} color="#0891B2"
+          detail={medications.slice(0, 3).map(m => m.medicine_name).join(', ') || t('cards.noneAdded')}
           onViewAll={() => navigate('/patient/dashboard/records')} />
-        <SummaryCard icon={<Activity size={20} style={{ color: '#F59E0B' }} />} label={t('Conditions')} value={conditions.length} color="#F59E0B"
-          detail={conditions.slice(0, 3).join(', ') || t('None recorded')}
+        <SummaryCard icon={<Activity size={20} style={{ color: '#F59E0B' }} />} label={t('cards.conditions')} value={conditions.length} color="#F59E0B"
+          detail={conditions.slice(0, 3).join(', ') || t('cards.noneRecorded')}
           onViewAll={() => navigate('/patient/dashboard/records')} />
-        <SummaryCard icon={<AlertTriangle size={20} style={{ color: '#EF4444' }} />} label={t('Allergies')} value={allergies.length} color="#EF4444"
-          detail={allergies.slice(0, 3).join(', ') || t('None recorded')}
+        <SummaryCard icon={<AlertTriangle size={20} style={{ color: '#EF4444' }} />} label={t('cards.allergies')} value={allergies.length} color="#EF4444"
+          detail={allergies.slice(0, 3).join(', ') || t('cards.noneRecorded')}
           onViewAll={() => navigate('/patient/dashboard/records')} />
-        <SummaryCard icon={<ShieldCheck size={20} style={{ color: '#10B981' }} />} label={t('Insurance')}
+        <SummaryCard icon={<ShieldCheck size={20} style={{ color: '#10B981' }} />} label={t('cards.insurance')}
           value={patient.has_insurance ? 1 : 0} color="#10B981"
-          detail={patient.has_insurance ? (patient.insurance_provider || t('Active')) : t('Not enrolled')}
+          detail={patient.has_insurance ? (patient.insurance_provider || t('cards.active')) : t('cards.notEnrolled')}
           onViewAll={() => navigate('/patient/dashboard/settings')} />
       </div>
 
@@ -218,15 +218,15 @@ const PatientOverview = () => {
         <JharokhaArch color="#0891B2" opacity={0.18} />
         <div className="p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-base font-bold" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', color: '#1E293B' }}>{t('Upcoming Appointments')}</h3>
-            <button onClick={() => navigate('/patient/dashboard/appointments')} className="text-[13px] font-medium" style={{ color: '#0891B2' }}>{t('Book Appointment')}</button>
+            <h3 className="text-base font-bold" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', color: '#1E293B' }}>{t('appointments.upcoming')}</h3>
+            <button onClick={() => navigate('/patient/dashboard/appointments')} className="text-[13px] font-medium" style={{ color: '#0891B2' }}>{t('appointments.book')}</button>
           </div>
           {appointments.length === 0 ? (
             <div className="py-8 text-center">
               <Calendar size={32} className="mx-auto mb-2" style={{ color: '#D1EBF1' }} />
-              <p className="text-[13px]" style={{ color: '#94A3B8' }}>{t('No upcoming appointments.')}</p>
+              <p className="text-[13px]" style={{ color: '#94A3B8' }}>{t('appointments.noUpcoming')}</p>
               <button onClick={() => navigate('/patient/dashboard/appointments')} className="text-[13px] font-medium mt-1" style={{ color: '#0891B2' }}>
-                {t('Book your first appointment')}
+                {t('appointments.bookFirst')}
               </button>
             </div>
           ) : (
@@ -254,15 +254,15 @@ const PatientOverview = () => {
         <JharokhaArch color="#F59E0B" opacity={0.18} />
         <div className="p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-base font-bold" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', color: '#1E293B' }}>{t('Recent Reports')}</h3>
-            <button onClick={() => navigate('/patient/dashboard/reports')} className="text-[13px] font-medium" style={{ color: '#0891B2' }}>{t('Upload Report')}</button>
+            <h3 className="text-base font-bold" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', color: '#1E293B' }}>{t('reports.recent')}</h3>
+            <button onClick={() => navigate('/patient/dashboard/reports')} className="text-[13px] font-medium" style={{ color: '#0891B2' }}>{t('reports.upload')}</button>
           </div>
           {reports.length === 0 ? (
             <div className="py-8 text-center">
               <FileText size={32} className="mx-auto mb-2" style={{ color: '#D1EBF1' }} />
-              <p className="text-[13px]" style={{ color: '#94A3B8' }}>{t('No reports uploaded yet.')}</p>
+              <p className="text-[13px]" style={{ color: '#94A3B8' }}>{t('reports.noReports')}</p>
               <button onClick={() => navigate('/patient/dashboard/reports')} className="text-[13px] font-medium mt-1" style={{ color: '#0891B2' }}>
-                {t('Upload your first report')}
+                {t('reports.uploadFirst')}
               </button>
             </div>
           ) : (
@@ -276,7 +276,7 @@ const PatientOverview = () => {
                   </div>
                   <div className="text-right">
                     <p className="text-[11px]" style={{ color: '#64748B' }}>{r.report_date ? format(new Date(r.report_date), 'dd MMM yyyy') : '—'}</p>
-                    {r.is_abnormal && <span className="text-[10px] font-bold" style={{ color: '#EF4444' }}>⚠️ {t('Abnormal')}</span>}
+                    {r.is_abnormal && <span className="text-[10px] font-bold" style={{ color: '#EF4444' }}>⚠️ {t('reports.abnormal')}</span>}
                   </div>
                 </div>
               ))}
@@ -290,25 +290,25 @@ const PatientOverview = () => {
         <JharokhaArch color="#0891B2" opacity={0.18} />
         <div className="p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-base font-bold" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', color: '#1E293B' }}>{t('Vitals Tracker')}</h3>
+            <h3 className="text-base font-bold" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', color: '#1E293B' }}>{t('vitals.tracker')}</h3>
             <button onClick={() => setShowLogVitals(true)}
               className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[13px] font-semibold text-white" style={{ background: '#0891B2' }}>
-              <Plus size={14} /> {t('Log Reading')}
+              <Plus size={14} /> {t('vitals.logReading')}
             </button>
           </div>
           {bpReadings.length === 0 && sugarReadings.length === 0 ? (
             <div className="py-8 text-center">
               <TrendingUp size={32} className="mx-auto mb-2" style={{ color: '#D1EBF1' }} />
-              <p className="text-[13px]" style={{ color: '#94A3B8' }}>{t('No vitals recorded yet.')}</p>
+              <p className="text-[13px]" style={{ color: '#94A3B8' }}>{t('vitals.noVitals')}</p>
               <button onClick={() => setShowLogVitals(true)} className="text-[13px] font-medium mt-1" style={{ color: '#0891B2' }}>
-                {t('Log your first reading')}
+                {t('vitals.logFirst')}
               </button>
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {bpReadings.length > 0 && (
                 <div>
-                  <p className="text-[12px] font-medium mb-2" style={{ color: '#64748B' }}>{t('Blood Pressure (last 7)')}</p>
+                  <p className="text-[12px] font-medium mb-2" style={{ color: '#64748B' }}>{t('vitals.bpLast7')}</p>
                   <ResponsiveContainer width="100%" height={160}>
                     <LineChart data={bpReadings.map(r => {
                       const parts = r.reading_value.split('/');
@@ -326,7 +326,7 @@ const PatientOverview = () => {
               )}
               {sugarReadings.length > 0 && (
                 <div>
-                  <p className="text-[12px] font-medium mb-2" style={{ color: '#64748B' }}>{t('Blood Sugar (last 7)')}</p>
+                  <p className="text-[12px] font-medium mb-2" style={{ color: '#64748B' }}>{t('vitals.sugarLast7')}</p>
                   <ResponsiveContainer width="100%" height={160}>
                     <LineChart data={sugarReadings.map(r => ({
                       date: format(new Date(r.recorded_at), 'dd/MM'),

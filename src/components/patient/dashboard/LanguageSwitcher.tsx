@@ -23,7 +23,7 @@ const LanguageSwitcher = () => {
         onClick={() => setOpen(!open)}
         className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[12px] font-medium transition-all hover:bg-gray-100"
         style={{ color: '#0891B2', border: '1px solid #E2EEF1' }}
-        title={t('Language')}
+        title={t('language')}
       >
         <Globe size={14} />
         <span className="hidden sm:inline">{current?.nativeLabel || 'EN'}</span>
@@ -35,7 +35,7 @@ const LanguageSwitcher = () => {
           style={{ border: '1px solid #E2EEF1' }}
         >
           <p className="px-3 py-2 text-[10px] font-bold uppercase tracking-wider" style={{ color: '#94A3B8' }}>
-            {t('Language')}
+            {t('language')}
           </p>
           {LANGUAGES.map(l => (
             <button

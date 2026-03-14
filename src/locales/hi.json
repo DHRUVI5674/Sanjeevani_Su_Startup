@@ -1,0 +1,95 @@
+{
+  "sidebar": {
+    "overview": "अवलोकन",
+    "medicalRecords": "मेडिकल रिकॉर्ड",
+    "labReports": "लैब रिपोर्ट",
+    "appointments": "अपॉइंटमेंट",
+    "findDoctors": "डॉक्टर खोजें",
+    "findPharmacy": "फार्मेसी खोजें",
+    "emergencyProfile": "आपातकालीन प्रोफ़ाइल",
+    "settings": "सेटिंग्स"
+  },
+  "topbar": {
+    "myHealth": "मेरा स्वास्थ्य",
+    "dashboard": "डैशबोर्ड"
+  },
+  "welcome": {
+    "greeting": "सुप्रभात",
+    "profileStatus": "आपकी स्वास्थ्य प्रोफ़ाइल {{completeness}}% पूर्ण है।",
+    "completeProfile": "अपनी प्रोफ़ाइल पूरी करें →"
+  },
+  "emergency": {
+    "title": "आपातकालीन प्रोफ़ाइल",
+    "showQR": "इमरजेंसी QR दिखाएँ",
+    "myQR": "मेरा इमरजेंसी QR",
+    "tapToView": "देखने और डाउनलोड करने के लिए टैप करें"
+  },
+  "cards": {
+    "activeMedications": "सक्रिय दवाइयाँ",
+    "conditions": "स्वास्थ्य स्थिति",
+    "allergies": "एलर्जी",
+    "insurance": "बीमा",
+    "noneAdded": "कोई नहीं जोड़ा गया",
+    "noneRecorded": "कोई रिकॉर्ड नहीं",
+    "notEnrolled": "नामांकित नहीं",
+    "active": "सक्रिय",
+    "viewAll": "सभी देखें →"
+  },
+  "appointments": {
+    "upcoming": "आगामी अपॉइंटमेंट",
+    "book": "अपॉइंटमेंट बुक करें +",
+    "noUpcoming": "कोई आगामी अपॉइंटमेंट नहीं।",
+    "bookFirst": "अपनी पहली अपॉइंटमेंट बुक करें →"
+  },
+  "reports": {
+    "recent": "हालिया रिपोर्ट",
+    "upload": "रिपोर्ट अपलोड करें +",
+    "noReports": "अभी तक कोई रिपोर्ट अपलोड नहीं।",
+    "uploadFirst": "अपनी पहली रिपोर्ट अपलोड करें →",
+    "abnormal": "असामान्य"
+  },
+  "vitals": {
+    "tracker": "वाइटल ट्रैकर",
+    "logReading": "रीडिंग दर्ज करें",
+    "noVitals": "अभी तक कोई वाइटल रिकॉर्ड नहीं।",
+    "logFirst": "अपनी पहली रीडिंग दर्ज करें →",
+    "bpLast7": "रक्तचाप (अंतिम 7)",
+    "sugarLast7": "रक्त शर्करा (अंतिम 7)",
+    "logTitle": "वाइटल रीडिंग दर्ज करें",
+    "bloodPressure": "🩸 रक्तचाप",
+    "bloodSugar": "🍬 रक्त शर्करा",
+    "systolic": "सिस्टोलिक (mmHg)",
+    "diastolic": "डायस्टोलिक (mmHg)",
+    "sugarMgdl": "रक्त शर्करा (mg/dL)",
+    "notes": "नोट्स (वैकल्पिक)",
+    "saveReading": "रीडिंग सेव करें",
+    "saving": "सेव हो रहा है...",
+    "cancel": "रद्द करें"
+  },
+  "prescriptions": {
+    "myPrescriptions": "मेरे प्रिस्क्रिप्शन",
+    "viewAll": "सभी देखें →",
+    "noActive": "कोई सक्रिय प्रिस्क्रिप्शन नहीं।",
+    "prescribedBy": "डॉ. द्वारा निर्धारित",
+    "diagnosis": "निदान:",
+    "viewFull": "पूरा देखें",
+    "giveFeedback": "फीडबैक दें",
+    "fillFeedback": "फीडबैक फॉर्म भरें",
+    "validUntil": "तक वैध",
+    "todayMedicines": "आज की दवाइयाँ",
+    "noMedicines": "आज के लिए कोई दवाई निर्धारित नहीं।",
+    "doctorWantsToKnow": "जानना चाहते हैं कि आप कैसा महसूस कर रहे हैं",
+    "shareFeedback": "कृपया 2 मिनट लेकर बताएं कि आप कैसा महसूस कर रहे हैं।"
+  },
+  "auth": {
+    "welcome": "स्वागत है",
+    "abhaLinked": "ABHA जुड़ा ✓",
+    "linkAbha": "ABHA जोड़ें →",
+    "logout": "लॉगआउट"
+  },
+  "buttons": {
+    "downloadProfile": "पूरी प्रोफ़ाइल डाउनलोड करें",
+    "generatingPdf": "PDF बन रहा है..."
+  },
+  "language": "भाषा"
+}
